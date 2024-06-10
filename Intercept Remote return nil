@@ -1,15 +1,19 @@
-return function(remote, argument)
-    local mt = getrawmetatable(remote)
-    local oldNC = mt.__namecall
-    setreadonly(mt, false)
+local function intercept(remote, argument)
+    return function()
+        local mt = getrawmetatable(remote)
+        local oldNC = mt.__namecall
+        setreadonly(mt, false)
 
-    mt.__namecall = newcclosure(function(...)
-        local args = {...}
-        if (not args[1] or (argument and args[1] == argument)) then
-            return nil
-        end
-        return oldNC(...)
-    end)
+        mt.__namecall = newcclosure(function(...)
+            local args = {...}
+            if (not args[1] or (argument and args[1] == argument)) then
+                return nil
+            end
+            return oldNC(...)
+        end)
 
-    setreadonly(mt, true)
+        setreadonly(mt, true)
+    end
 end
+
+return intercept
