@@ -1,2 +1,1 @@
-
 loadstring(game:HttpGet("https://raw.githubusercontent.com/OneCreatorX-New/oneDev/Scripts/IntercepRemoteNil.lua")()
