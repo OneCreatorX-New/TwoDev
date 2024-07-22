@@ -77,11 +77,9 @@ local function loadExternalScript(scriptId)
 
     if scriptId ~= game.PlaceId then
         notify("Advertencia: El ID del script no coincide con el ID del juego")
+        fetchAndLoadScript()
     end
 
     fetchAndLoadScript()
 end
-
--- Uso: Llama a esta función con el ID del script que quieres cargar
--- Por ejemplo: loadExternalScript(11258371342)
 return loadExternalScript
