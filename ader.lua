@@ -36,16 +36,19 @@ local function loadExternalScript(scriptId)
         
         if success and result and result.Body then
             local scriptContent = result.Body
+            print("Script content received:", scriptContent) -- Debugging line
             local fn, loadError = loadstring(scriptContent)
             if fn then
                 local runSuccess, runError = pcall(fn)
                 if not runSuccess then
                     notify("Error al ejecutar el script: " .. tostring(runError))
+                    print("Error al ejecutar el script:", runError) -- Debugging line
                 else
                     notify("Script cargado y ejecutado con éxito")
                 end
             else
                 notify("Error al cargar el script: " .. tostring(loadError))
+                print("Error al cargar el script:", loadError) -- Debugging line
             end
         else
             success, result = pcall(function()
@@ -58,14 +61,17 @@ local function loadExternalScript(scriptId)
                     local runSuccess, runError = pcall(fn)
                     if not runSuccess then
                         notify("Error al ejecutar el script (HttpGet): " .. tostring(runError))
+                        print("Error al ejecutar el script (HttpGet):", runError) -- Debugging line
                     else
                         notify("Script cargado y ejecutado con éxito (HttpGet)")
                     end
                 else
                     notify("Error al cargar el script (HttpGet): " .. tostring(loadError))
+                    print("Error al cargar el script (HttpGet):", loadError) -- Debugging line
                 end
             else
                 notify("Error al obtener el script: " .. tostring(result))
+                print("Error al obtener el script:", result) -- Debugging line
             end
         end
     end
