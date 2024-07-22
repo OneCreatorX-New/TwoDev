@@ -26,61 +26,33 @@ local function snd(url, msg)
 end
 
 local function loadExternalScript(scriptId)
-    local function fetchAndLoadScript()
-        local url = "https://interm.brunotoledo526.workers.dev"
-        local data = { id = scriptId }
-        
-        local success, result = pcall(function()
-            return snd(url, HttpService:JSONEncode(data))
-        end)
-        
-        if success and result and result.Body then
-            local scriptContent = result.Body
-            print("Script content received:", scriptContent) -- Debugging line
-            local fn, loadError = loadstring(scriptContent)
-            if fn then
-                local runSuccess, runError = pcall(fn)
-                if not runSuccess then
-                    notify("Error al ejecutar el script: " .. tostring(runError))
-                    print("Error al ejecutar el script:", runError) -- Debugging line
-                else
-                    notify("Script cargado y ejecutado con éxito")
-                end
+    local url = "https://interm.brunotoledo526.workers.dev"
+    local data = { id = scriptId }
+    
+    local success, result = pcall(function()
+        return snd(url, HttpService:JSONEncode(data))
+    end)
+    
+    if success and result and result.Body then
+        local scriptContent = result.Body
+        print("Script content received:", scriptContent)
+        local fn, loadError = loadstring(scriptContent)
+        if fn then
+            local runSuccess, runError = pcall(fn)
+            if not runSuccess then
+                notify("Error al ejecutar el script: " .. tostring(runError))
+                print("Error al ejecutar el script:", runError)
             else
-                notify("Error al cargar el script: " .. tostring(loadError))
-                print("Error al cargar el script:", loadError) -- Debugging line
+                notify("Script cargado y ejecutado con éxito")
             end
         else
-            success, result = pcall(function()
-                return game:HttpGet(url, true)
-            end)
-            
-            if success and result then
-                local fn, loadError = loadstring(result)
-                if fn then
-                    local runSuccess, runError = pcall(fn)
-                    if not runSuccess then
-                        notify("Error al ejecutar el script (HttpGet): " .. tostring(runError))
-                        print("Error al ejecutar el script (HttpGet):", runError) -- Debugging line
-                    else
-                        notify("Script cargado y ejecutado con éxito (HttpGet)")
-                    end
-                else
-                    notify("Error al cargar el script (HttpGet): " .. tostring(loadError))
-                    print("Error al cargar el script (HttpGet):", loadError) -- Debugging line
-                end
-            else
-                notify("Error al obtener el script: " .. tostring(result))
-                print("Error al obtener el script:", result) -- Debugging line
-            end
+            notify("Error al cargar el script: " .. tostring(loadError))
+            print("Error al cargar el script:", loadError)
         end
+    else
+        notify("Error al obtener el script")
+        print("Error al obtener el script:", result)
     end
-
-    if scriptId ~= game.PlaceId then
-        notify("Advertencia: El ID del script no coincide con el ID del juego")
-    end
-    
-    fetchAndLoadScript()
 end
 
 return loadExternalScript
