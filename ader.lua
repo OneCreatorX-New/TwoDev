@@ -1,3 +1,4 @@
+print(param)
 return function(param)
     local HttpService = game:GetService("HttpService")
     local MarketplaceService = game:GetService("MarketplaceService")
