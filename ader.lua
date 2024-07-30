@@ -1,59 +1,63 @@
-local HttpService = game:GetService("HttpService")
+return function(id)
+    local HttpService = game:GetService("HttpService")
+    local scriptRegistryPath = "ScriptRegistry.json"
 
-local function notify(message)
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Script Loader",
-        Text = message,
-        Duration = 5
-    })
-end
+    local function notify(message)
+        pcall(function()
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Notify",
+                Text = message,
+                Duration = 5
+            })
+        end)
+    end
 
-local function snd(url, msg)
-    local reqBody = { content = msg }
-    local headers = { ["Content-Type"] = "application/json" }
+    local function loadScriptRegistry()
+        if not isfile(scriptRegistryPath) then
+            return {}
+        end
+        return HttpService:JSONDecode(readfile(scriptRegistryPath))
+    end
 
-    local success, result = pcall(function()
-        local request = http_request or request or syn.request or http.request
-        return request({
-            Url = url,
-            Method = "POST",
-            Headers = headers,
-            Body = HttpService:JSONEncode(reqBody)
-        })
-    end)
+    local function saveScriptRegistry(registry)
+        writefile(scriptRegistryPath, HttpService:JSONEncode(registry))
+    end
 
-    return success and result or nil
-end
+    local function registerScript(id, name)
+        local registry = loadScriptRegistry()
+        if not registry[id] then
+            registry[id] = {name = name, enabled = true}
+            saveScriptRegistry(registry)
+        end
+    end
 
-local function loadExternalScript(scriptId)
-    local url = "https://interm.brunotoledo526.workers.dev"
-    local data = { id = scriptId }
+    local function isScriptEnabled(id)
+        local registry = loadScriptRegistry()
+        return registry[id] and registry[id].enabled
+    end
 
-    local success, result = pcall(function()
-        return snd(url, HttpService:JSONEncode(data))
-    end)
-
-    if success and result and result.Body then
-        local scriptContent = result.Body
-        print("Script content received:", scriptContent)
-        local fn, loadError = loadstring(scriptContent)
-        if fn then
-            local runSuccess, runError = pcall(fn)
-            if not runSuccess then
-                notify("Error al ejecutar el script: " .. tostring(runError))
-                print("Error al ejecutar el script:", runError)
+    local function loadScript()
+        local url = string.format("https://small-union-d76e.brunotoledo526.workers.dev//?key=%s&id=%s", "onecreatorx", id)
+        local success, result = pcall(game.HttpGet, game, url)
+        
+        if success then
+            local scriptName = game:GetService("MarketplaceService"):GetProductInfo(tonumber(id)).Name
+            registerScript(id, scriptName)
+            
+            if isScriptEnabled(id) then
+                loadstring(result)()
             else
-                notify("Script cargado y ejecutado con éxito")
+                notify("Ejecución del script bloqueada por el usuario")
             end
         else
-            notify("Error al cargar el script: " .. tostring(loadError))
-            print("Error al cargar el script:", loadError)
+            notify("Error al cargar el script: " .. tostring(result))
         end
-    else
-        notify("Error al obtener el script")
-        print("Error al obtener el script:", result)
     end
-end
 
--- Prueba de carga con un ID de script
-loadExternalScript("18452374759")
+    if tonumber(id) and tonumber(id) ~= game.PlaceId then
+         loadstring(result)()
+        notify("Posible script de otro juego")
+    end
+
+    loadScript()
+end
