@@ -80,7 +80,7 @@ return function(param)
     if tonumber(param) ~= game.PlaceId then
         notify("Advertencia", "Posible script de otro juego", 5)
     end
-    loadScript()
+
     if type(param) == "string" and param:match("^%s*(.-)%s*$") ~= "" then
         loadScript()
     else
