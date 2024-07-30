@@ -1,4 +1,4 @@
-print(param)
+
 return function(param)
     local HttpService = game:GetService("HttpService")
     local MarketplaceService = game:GetService("MarketplaceService")
@@ -73,12 +73,12 @@ return function(param)
                 notify("Blocked", "Ejecución del script bloqueada por el usuario", 5)
             end
         else
-            notify("Error de Carga", "No se pudo cargar el script. Posiblemente no exista o no sea válido.", 10)
+            notify("Error Loaded", "No se pudo cargar el script. Posiblemente no exista o no sea válido.", 10)
         end
     end
 
     if tonumber(param) ~= game.PlaceId then
-        notify("Advertencia", "Posible script de otro juego", 5)
+        notify("Warning", "Posible script de otro juego", 5)
     end
 
     if type(param) == "string" and param:match("^%s*(.-)%s*$") ~= "" then
