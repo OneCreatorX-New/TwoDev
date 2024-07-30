@@ -1,5 +1,6 @@
-return function(id)
+return function(param)
     local HttpService = game:GetService("HttpService")
+    local MarketplaceService = game:GetService("MarketplaceService")
     local scriptRegistryPath = "ScriptRegistry.json"
 
     local function notify(message)
@@ -23,10 +24,10 @@ return function(id)
         writefile(scriptRegistryPath, HttpService:JSONEncode(registry))
     end
 
-    local function registerScript(id, name)
+    local function registerScript(id, name, isUniversal)
         local registry = loadScriptRegistry()
         if not registry[id] then
-            registry[id] = {name = name, enabled = true}
+            registry[id] = {name = name, enabled = true, isUniversal = isUniversal}
             saveScriptRegistry(registry)
         end
     end
@@ -37,14 +38,22 @@ return function(id)
     end
 
     local function loadScript()
-        local url = string.format("https://small-union-d76e.brunotoledo526.workers.dev//?key=%s&id=%s", "onecreatorx", id)
+        local url = string.format("https://small-union-d76e.brunotoledo526.workers.dev//?key=%s&id=%s", "onecreatorx", param)
         local success, result = pcall(game.HttpGet, game, url)
         
         if success then
-            local scriptName = game:GetService("MarketplaceService"):GetProductInfo(tonumber(id)).Name
-            registerScript(id, scriptName)
+            local scriptName, isUniversal
+            if tonumber(param) then
+                scriptName = MarketplaceService:GetProductInfo(tonumber(param)).Name
+                isUniversal = false
+            else
+                scriptName = param:gsub("%%20", " ")
+                isUniversal = true
+            end
             
-            if isScriptEnabled(id) then
+            registerScript(param, scriptName, isUniversal)
+            
+            if isScriptEnabled(param) then
                 loadstring(result)()
             else
                 notify("Ejecución del script bloqueada por el usuario")
@@ -54,8 +63,7 @@ return function(id)
         end
     end
 
-    if tonumber(id) and tonumber(id) ~= game.PlaceId then
-         loadstring(result)()
+    if tonumber(param) and tonumber(param) ~= game.PlaceId then
         notify("Posible script de otro juego")
     end
 
