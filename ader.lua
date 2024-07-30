@@ -66,10 +66,10 @@ return function(param)
                 if not success then
                     notify("Error de Ejecución", "El script no pudo ejecutarse: " .. tostring(errorMsg), 10)
                 else
-                    notify("Éxito", "Script cargado y ejecutado correctamente", 5)
+                    notify("Success", "Script cargado y ejecutado correctamente", 5)
                 end
             else
-                notify("Bloqueado", "Ejecución del script bloqueada por el usuario", 5)
+                notify("Blocked", "Ejecución del script bloqueada por el usuario", 5)
             end
         else
             notify("Error de Carga", "No se pudo cargar el script. Posiblemente no exista o no sea válido.", 10)
@@ -79,6 +79,7 @@ return function(param)
     if tonumber(param) then
         if tonumber(param) ~= game.PlaceId then
             notify("Advertencia", "Posible script de otro juego", 5)
+            loadScript()
         end
         loadScript()
     elseif type(param) == "string" and param:match("^%s*(.-)%s*$") ~= "" then
