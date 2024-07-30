@@ -3,12 +3,12 @@ return function(param)
     local MarketplaceService = game:GetService("MarketplaceService")
     local scriptRegistryPath = "ScriptRegistry.json"
 
-    local function notify(message)
+    local function notify(title, message, duration)
         pcall(function()
             game:GetService("StarterGui"):SetCore("SendNotification", {
-                Title = "Notify",
+                Title = title,
                 Text = message,
-                Duration = 5
+                Duration = duration or 5
             })
         end)
     end
@@ -44,8 +44,16 @@ return function(param)
         if success then
             local scriptName, isUniversal
             if tonumber(param) then
-                scriptName = MarketplaceService:GetProductInfo(tonumber(param)).Name
-                isUniversal = false
+                local success, info = pcall(function()
+                    return MarketplaceService:GetProductInfo(tonumber(param))
+                end)
+                if success and info then
+                    scriptName = info.Name
+                    isUniversal = false
+                else
+                    scriptName = "Script ID: " .. param
+                    isUniversal = false
+                end
             else
                 scriptName = param:gsub("%%20", " ")
                 isUniversal = true
@@ -54,18 +62,28 @@ return function(param)
             registerScript(param, scriptName, isUniversal)
             
             if isScriptEnabled(param) then
-                loadstring(result)()
+                local success, errorMsg = pcall(loadstring(result))
+                if not success then
+                    notify("Error de Ejecución", "El script no pudo ejecutarse: " .. tostring(errorMsg), 10)
+                else
+                    notify("Éxito", "Script cargado y ejecutado correctamente", 5)
+                end
             else
-                notify("Ejecución del script bloqueada por el usuario")
+                notify("Bloqueado", "Ejecución del script bloqueada por el usuario", 5)
             end
         else
-            notify("Error al cargar el script: " .. tostring(result))
+            notify("Error de Carga", "No se pudo cargar el script. Posiblemente no exista o no sea válido.", 10)
         end
     end
 
-    if tonumber(param) and tonumber(param) ~= game.PlaceId then
-        notify("Posible script de otro juego")
+    if tonumber(param) then
+        if tonumber(param) ~= game.PlaceId then
+            notify("Advertencia", "Posible script de otro juego", 5)
+        end
+        loadScript()
+    elseif type(param) == "string" and param:match("^%s*(.-)%s*$") ~= "" then
+        loadScript()
+    else
+        notify("Error", "ID o nombre de script no válido", 5)
     end
-
-    loadScript()
 end
