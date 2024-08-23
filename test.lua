@@ -3,7 +3,7 @@ local function ScriptLoader(slugs)
         pcall(function()
             game:GetService("StarterGui"):SetCore("SendNotification", {
                 Title = "Notify",
-                Text = message,
+                Text = tostring(message),
                 Duration = 5
             })
         end)
@@ -18,7 +18,10 @@ local function ScriptLoader(slugs)
         if success then
             local scriptFunction, loadError = loadstring(result)
             if scriptFunction then
-                scriptFunction()
+                local success, executeError = pcall(scriptFunction)
+                if not success then
+                    notify("Error al ejecutar el script: " .. tostring(executeError))
+                end
             else
                 notify("Error al cargar el script: " .. tostring(loadError))
             end
@@ -27,8 +30,9 @@ local function ScriptLoader(slugs)
         end
     end
 
-    if game.PlaceId ~= tonumber(slugs:match("^(%d+)")) then
-loadScript()
+    local a = true
+    if a then
+      loadScript()  
     end
     
     loadScript()
