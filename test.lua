@@ -10,7 +10,7 @@ local function ScriptLoader(slugs)
     end
 
     local function loadScript()
-        local url = string.format("${L}/?t=%d&sl=%s", os.time(), slugs)
+        local url = string.format("https://loader.brunotoledo526.workers.dev/?t=%d&sl=%s", os.time(), slugs)
         local success, result = pcall(function()
             return game:HttpGet(url)
         end)
@@ -28,10 +28,10 @@ local function ScriptLoader(slugs)
     end
 
     if game.PlaceId ~= tonumber(slugs:match("^(%d+)")) then
-        notify("Posible script para otro juego")
-    else
-        loadScript()
+loadScript()
     end
+    
+    loadScript()
 end
 
 return ScriptLoader
