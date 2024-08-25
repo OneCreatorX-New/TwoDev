@@ -60,6 +60,7 @@ local function ScriptLoader(slugs)
         end)
         
         if success then
+            print("Contenido del script obtenido:\n" .. result)  -- Imprimir el contenido del script para depuración
             local scriptFunction, loadError = loadstring(result)
             if scriptFunction then
                 local execSuccess, execError = pcall(scriptFunction)
@@ -71,12 +72,12 @@ local function ScriptLoader(slugs)
                 task.wait(5)
                 screenGui:Destroy()
             else
-                screenGui:Destroy()
                 warn("Error al cargar el script: " .. tostring(loadError))
+                screenGui:Destroy()
             end
         else
-            screenGui:Destroy()
             warn("Error al obtener el script: " .. tostring(result))
+            screenGui:Destroy()
         end
     end
 
