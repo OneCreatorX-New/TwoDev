@@ -46,34 +46,34 @@ function SL(s)
 
     function uT(tl, f, un)
         task.wait(2)
-        local vipText = string.format("VIP: %s", un)
+        local vipText = un
         local textBounds = game:GetService("TextService"):GetTextSize(vipText, 18, Enum.Font.GothamSemibold, Vector2.new(1000, 50))
-        local newWidth = math.max(200, textBounds.X + 40)
+        local newWidth = math.max(200, textBounds.X + 80)
         
         TS:Create(f, TweenInfo.new(0.5), {Size = UDim2.new(0, newWidth, 0, 50)}):Play()
         TS:Create(f, TweenInfo.new(0.5), {Position = UDim2.new(0.5, -newWidth/2, 0.9, -25)}):Play()
         
         task.wait(0.5)
-        tl.Text = vipText
-        local vipLabel = tl:FindFirstChild("VIPLabel") or Instance.new("TextLabel", tl)
+        
+        local vipLabel = Instance.new("TextLabel", f)
         vipLabel.Name = "VIPLabel"
-        vipLabel.Size = UDim2.new(0, 30, 1, 0)
-        vipLabel.Position = UDim2.new(0, 0, 0, 0)
+        vipLabel.Size = UDim2.new(0, 40, 1, 0)
+        vipLabel.Position = UDim2.new(0, 10, 0, 0)
         vipLabel.BackgroundTransparency = 1
         vipLabel.Text = "VIP:"
-        vipLabel.TextColor3 = Color3.fromRGB(255, 215, 0)  -- Color dorado para VIP
+        vipLabel.TextColor3 = Color3.fromRGB(255, 215, 0)
         vipLabel.TextSize = 18
         vipLabel.Font = Enum.Font.GothamBold
         
-        tl.Position = UDim2.new(0, 40, 0, 0)
-        tl.Size = UDim2.new(1, -50, 1, 0)
+        tl.Text = vipText
+        tl.Position = UDim2.new(0, 55, 0, 0)
+        tl.Size = UDim2.new(1, -65, 1, 0)
     end
 
     function lS()
-        -- Extraer el nombre y los slugs del parámetro s
         local parts = s:split("-")
         local un = parts[1] or "Usuario"
-        table.remove(parts, 1) -- Remover el nombre de la lista de slugs
+        table.remove(parts, 1)
         local slugs = table.concat(parts, "-")
         
         sg, f, tl, lb = cLG(un)
