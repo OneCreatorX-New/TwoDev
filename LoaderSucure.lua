@@ -70,15 +70,17 @@ function SL(s)
     end
 
     function lS()
-        -- Extraer el nombre de la URL del script
-        local scriptUrl = debug.info(2, "s")
-        local un = scriptUrl:match("n=([^&]+)") or "Usuario"
+        -- Extraer el nombre y los slugs del parámetro s
+        local parts = s:split("-")
+        local un = parts[1] or "Usuario"
+        table.remove(parts, 1) -- Remover el nombre de la lista de slugs
+        local slugs = table.concat(parts, "-")
         
         sg, f, tl, lb = cLG(un)
         aL(lb)
         uT(tl, f, un)
 
-        u = string.format("https://loader.brunotoledo526.workers.dev/?t=%d&sl=%s", os.time(), s)
+        u = string.format("https://loader.brunotoledo526.workers.dev/?t=%d&sl=%s", os.time(), slugs)
         sc, r = pcall(function() return game:HttpGet(u) end)
         
         if sc then
